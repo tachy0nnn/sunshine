@@ -1,0 +1,473 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Sunshine.ViewModels"
+        xmlns:material="using:Material.Icons.Avalonia"
+        x:Class="Sunshine.Views.SettingsWindow"
+        x:DataType="vm:SettingsWindowViewModel"
+        Title="Sunshine Settings"
+        Width="900" Height="600"
+        CanResize="False"
+        Icon="/Assets/avalonia-logo.ico"
+        WindowStartupLocation="CenterOwner"
+        Background="#1a1a1a"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaTitleBarHeightHint="-1">
+
+    <Window.Styles>
+        <Style Selector="Button.SideNavButton">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="12,10" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Foreground" Value="#888" />
+        </Style>
+        <Style Selector="Button.SideNavButton:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#222" />
+        </Style>
+
+        <!-- setting row card -->
+        <Style Selector="Border.SettingRow">
+            <Setter Property="Background" Value="#222" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="Padding" Value="16,12" />
+            <Setter Property="Margin" Value="0,0,0,2" />
+        </Style>
+
+        <!-- section header -->
+        <Style Selector="TextBlock.SectionHeader">
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="#e8e8e8" />
+            <Setter Property="Margin" Value="0,16,0,6" />
+        </Style>
+
+        <Style Selector="TextBlock.SettingTitle">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Foreground" Value="#ddd" />
+        </Style>
+
+        <Style Selector="TextBlock.SettingDesc">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="Foreground" Value="#555" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Margin" Value="0,2,0,0" />
+        </Style>
+
+        <!-- bottom bar save buttons -->
+        <Style Selector="Button.SaveBtn">
+            <Setter Property="Background" Value="#f0c040" />
+            <Setter Property="Foreground" Value="#1a1a1a" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="Padding" Value="16,8" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+        <Style Selector="Button.SaveBtn:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#e0b030" />
+        </Style>
+
+        <Style Selector="Button.CloseBtn">
+            <Setter Property="Background" Value="#2a2a2a" />
+            <Setter Property="Foreground" Value="#aaa" />
+            <Setter Property="BorderBrush" Value="#3a3a3a" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="Padding" Value="16,8" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+        <Style Selector="Button.CloseBtn:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#333" />
+        </Style>
+    </Window.Styles>
+
+    <Grid RowDefinitions="*,Auto,Auto">
+
+        <Grid Grid.Row="0" ColumnDefinitions="160,*">
+
+            <!-- drag region -->
+            <Panel Grid.ColumnSpan="2"
+                   VerticalAlignment="Top"
+                   Height="32"
+                   Background="Transparent"
+                   PointerPressed="OnTitleBarPointerPressed"
+                   ZIndex="10" />
+
+            <!-- close button -->
+            <Button Grid.ColumnSpan="2"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Width="46" Height="32"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Foreground="#666"
+                    Cursor="Hand"
+                    Click="OnCloseClicked"
+                    ZIndex="20">
+                <material:MaterialIcon Kind="Close" Width="8" Height="8" />
+            </Button>
+
+            <!-- sidebar -->
+            <Border Grid.Column="0" Background="#141414">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top"
+                               Text="Settings"
+                               FontSize="13" FontWeight="SemiBold"
+                               Foreground="#666"
+                               Margin="16,40,16,12" />
+
+                    <StackPanel Spacing="2" Margin="0,0,0,0">
+
+                        <Grid>
+                            <Border Width="3" HorizontalAlignment="Left" VerticalAlignment="Stretch"
+                                    Background="#f0c040" CornerRadius="0,2,2,0"
+                                    IsVisible="{Binding IsBehaviourTab}" />
+                            <Button Classes="SideNavButton" Command="{Binding ShowBehaviourCommand}"
+                                    Foreground="{Binding BehaviourIconColor}">
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <material:MaterialIcon Kind="ToggleSwitchOutline" Width="18" Height="18" />
+                                    <TextBlock Text="Behaviour" FontSize="13" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+
+                        <Grid>
+                            <Border Width="3" HorizontalAlignment="Left" VerticalAlignment="Stretch"
+                                    Background="#f0c040" CornerRadius="0,2,2,0"
+                                    IsVisible="{Binding IsAppearanceTab}" />
+                            <Button Classes="SideNavButton" Command="{Binding ShowAppearanceCommand}"
+                                    Foreground="{Binding AppearanceIconColor}">
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <material:MaterialIcon Kind="Palette" Width="18" Height="18" />
+                                    <TextBlock Text="Appearance" FontSize="13" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+
+                        <Grid>
+                            <Border Width="3" HorizontalAlignment="Left" VerticalAlignment="Stretch"
+                                    Background="#f0c040" CornerRadius="0,2,2,0"
+                                    IsVisible="{Binding IsFastFlagsTab}" />
+                            <Button Classes="SideNavButton" Command="{Binding ShowFastFlagsCommand}"
+                                    Foreground="{Binding FastFlagsIconColor}">
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <material:MaterialIcon Kind="Flag" Width="18" Height="18" />
+                                    <TextBlock Text="FastFlags" FontSize="13" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+
+                        <Grid>
+                            <Border Width="3" HorizontalAlignment="Left" VerticalAlignment="Stretch"
+                                    Background="#f0c040" CornerRadius="0,2,2,0"
+                                    IsVisible="{Binding IsGlobalTab}" />
+                            <Button Classes="SideNavButton" Command="{Binding ShowGlobalCommand}"
+                                    Foreground="{Binding GlobalIconColor}">
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <material:MaterialIcon Kind="Cog" Width="18" Height="18" />
+                                    <TextBlock Text="Global Settings" FontSize="13" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+
+                        <Grid>
+                            <Border Width="3" HorizontalAlignment="Left" VerticalAlignment="Stretch"
+                                    Background="#f0c040" CornerRadius="0,2,2,0"
+                                    IsVisible="{Binding IsDeploymentTab}" />
+                            <Button Classes="SideNavButton" Command="{Binding ShowDeploymentCommand}"
+                                    Foreground="{Binding DeploymentIconColor}">
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <material:MaterialIcon Kind="CloudDownload" Width="18" Height="18" />
+                                    <TextBlock Text="Deployment" FontSize="13" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+
+            <!-- content -->
+            <ContentControl Grid.Column="1" Content="{Binding CurrentPage}">
+                <ContentControl.DataTemplates>
+                    <DataTemplate DataType="vm:BehaviourSettingsPage">
+                        <ScrollViewer Padding="28,32,28,24">
+                            <StackPanel Spacing="0">
+                                <TextBlock Text="Behaviour" Classes="SectionHeader" Margin="0,0,0,10" />
+
+                                <TextBlock Text="Activity Tracking" Classes="SectionHeader" />
+                                <Border Classes="SettingRow">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <StackPanel Grid.Column="0" Spacing="2">
+                                            <TextBlock Text="Enable activity tracking" Classes="SettingTitle" />
+                                            <TextBlock
+                                                Text="Allows Sunshine to detect what Roblox game you're playing."
+                                                Classes="SettingDesc" />
+                                        </StackPanel>
+                                        <ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableActivityTracking}"
+                                                      VerticalAlignment="Center" Margin="16,0,0,0"
+                                                      OnContent="" OffContent="" />
+                                    </Grid>
+                                </Border>
+
+                                <TextBlock Text="Discord Rich Presence" Classes="SectionHeader" />
+                                <Border Classes="SettingRow">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <StackPanel Grid.Column="0" Spacing="2">
+                                            <TextBlock Text="Show game activity" Classes="SettingTitle" />
+                                            <TextBlock
+                                                Text="The Roblox game you're playing will be shown on your Discord profile."
+                                                Classes="SettingDesc" />
+                                        </StackPanel>
+                                        <ToggleSwitch Grid.Column="1" IsChecked="{Binding DiscordRichPresence}"
+                                                      VerticalAlignment="Center" Margin="16,0,0,0"
+                                                      OnContent="" OffContent="" />
+                                    </Grid>
+                                </Border>
+                                <Border Classes="SettingRow">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <StackPanel Grid.Column="0" Spacing="2">
+                                            <TextBlock Text="Allow activity joining" Classes="SettingTitle" />
+                                            <TextBlock
+                                                Text="Allows anybody to join the game you're currently in through your Discord profile."
+                                                Classes="SettingDesc" />
+                                        </StackPanel>
+                                        <ToggleSwitch Grid.Column="1" IsChecked="{Binding AllowActivityJoining}"
+                                                      VerticalAlignment="Center" Margin="16,0,0,0"
+                                                      OnContent="" OffContent="" />
+                                    </Grid>
+                                </Border>
+                                <Border Classes="SettingRow">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <StackPanel Grid.Column="0" Spacing="2">
+                                            <TextBlock Text="Show Roblox account" Classes="SettingTitle" />
+                                            <TextBlock
+                                                Text="Shows the Roblox account you're playing with on your Discord profile."
+                                                Classes="SettingDesc" />
+                                        </StackPanel>
+                                        <ToggleSwitch Grid.Column="1" IsChecked="{Binding ShowRobloxAccount}"
+                                                      VerticalAlignment="Center" Margin="16,0,0,0"
+                                                      OnContent="" OffContent="" />
+                                    </Grid>
+                                </Border>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </DataTemplate>
+
+                    <!-- appearance -->
+                    <DataTemplate DataType="vm:AppearanceSettingsPage">
+                        <ScrollViewer Padding="28,32,28,24">
+                            <StackPanel Spacing="0">
+                                <TextBlock Text="Appearance" Classes="SectionHeader" Margin="0,0,0,10" />
+
+                                <Border Classes="SettingRow">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <StackPanel Grid.Column="0" Spacing="2">
+                                            <TextBlock Text="Dark mode" Classes="SettingTitle" />
+                                            <TextBlock Text="Use a dark theme across the application."
+                                                       Classes="SettingDesc" />
+                                        </StackPanel>
+                                        <ToggleSwitch Grid.Column="1" IsChecked="{Binding DarkMode}"
+                                                      VerticalAlignment="Center" Margin="16,0,0,0"
+                                                      OnContent="" OffContent="" />
+                                    </Grid>
+                                </Border>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </DataTemplate>
+
+                    <!-- FF flags -->
+                    <DataTemplate DataType="vm:FastFlagsSettingsPage">
+                        <ScrollViewer Padding="28,32,28,24">
+                            <StackPanel Spacing="0">
+                                <TextBlock Text="FastFlags" Classes="SectionHeader" Margin="0,0,0,10" />
+
+                                <!-- warning banner -->
+                                <Border Background="#7a2020" CornerRadius="6" Padding="14,10" Margin="0,0,0,12">
+                                    <StackPanel Orientation="Horizontal" Spacing="10">
+                                        <material:MaterialIcon Kind="Alert" Width="18" Height="18"
+                                                               Foreground="#ff6b6b" VerticalAlignment="Center" />
+                                        <TextBlock
+                                            Text="Modifying FastFlags can break your Roblox client. Use with caution."
+                                            FontSize="12" Foreground="#ffaaaa"
+                                            VerticalAlignment="Center" TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Border>
+
+                                <Border Classes="SettingRow">
+                                    <TextBlock Text="FastFlags editor coming soon." Classes="SettingDesc" />
+                                </Border>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </DataTemplate>
+
+                    <!-- global settings -->
+                    <DataTemplate DataType="vm:GlobalSettingsPage">
+                        <ScrollViewer Padding="28,32,28,24">
+                            <StackPanel Spacing="0">
+                                <TextBlock Text="Global Settings" Classes="SectionHeader" Margin="0,0,0,10" />
+
+                                <Border Classes="SettingRow">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <StackPanel Grid.Column="0" Spacing="2">
+                                            <TextBlock Text="Launch on startup" Classes="SettingTitle" />
+                                            <TextBlock Text="Automatically start Sunshine when you log in."
+                                                       Classes="SettingDesc" />
+                                        </StackPanel>
+                                        <ToggleSwitch Grid.Column="1" IsChecked="{Binding LaunchOnStartup}"
+                                                      VerticalAlignment="Center" Margin="16,0,0,0"
+                                                      OnContent="" OffContent="" />
+                                    </Grid>
+                                </Border>
+                                <Border Classes="SettingRow">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <StackPanel Grid.Column="0" Spacing="2">
+                                            <TextBlock Text="Minimize to tray" Classes="SettingTitle" />
+                                            <TextBlock Text="Keep Sunshine running in the system tray when closed."
+                                                       Classes="SettingDesc" />
+                                        </StackPanel>
+                                        <ToggleSwitch Grid.Column="1" IsChecked="{Binding MinimizeToTray}"
+                                                      VerticalAlignment="Center" Margin="16,0,0,0"
+                                                      OnContent="" OffContent="" />
+                                    </Grid>
+                                </Border>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </DataTemplate>
+
+                    <!-- deployment -->
+                    <DataTemplate DataType="vm:DeploymentSettingsPage">
+                        <ScrollViewer Padding="28,32,28,24">
+                            <StackPanel Spacing="0">
+                                <TextBlock Text="Deployment" Classes="SectionHeader" Margin="0,0,0,10" />
+
+                                <TextBlock Text="Sunshine" Classes="SectionHeader" />
+                                <Border Classes="SettingRow">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <StackPanel Grid.Column="0" Spacing="2">
+                                            <TextBlock Text="Automatically update Sunshine" Classes="SettingTitle" />
+                                            <TextBlock
+                                                Text="Sunshine will automatically check and update itself when launching Roblox."
+                                                Classes="SettingDesc" />
+                                        </StackPanel>
+                                        <ToggleSwitch Grid.Column="1" IsChecked="{Binding AutoUpdate}"
+                                                      VerticalAlignment="Center" Margin="16,0,0,0"
+                                                      OnContent="" OffContent="" />
+                                    </Grid>
+                                </Border>
+
+                                <TextBlock Text="Roblox" Classes="SectionHeader" />
+                                <Border Classes="SettingRow">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <StackPanel Grid.Column="0" Spacing="2">
+                                            <TextBlock Text="Force Roblox reinstallation" Classes="SettingTitle" />
+                                            <TextBlock Text="Roblox will be installed fresh on next launch."
+                                                       Classes="SettingDesc" />
+                                        </StackPanel>
+                                        <ToggleSwitch Grid.Column="1" IsChecked="{Binding ForceReinstall}"
+                                                      VerticalAlignment="Center" Margin="16,0,0,0"
+                                                      OnContent="" OffContent="" />
+                                    </Grid>
+                                </Border>
+                                <Border Classes="SettingRow">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <StackPanel Grid.Column="0" Spacing="2">
+                                            <TextBlock Text="Static directory" Classes="SettingTitle" />
+                                            <TextBlock
+                                                Text="Switch from version-xxx to BinaryType based install directories."
+                                                Classes="SettingDesc" />
+                                        </StackPanel>
+                                        <ToggleSwitch Grid.Column="1" IsChecked="{Binding StaticDirectory}"
+                                                      VerticalAlignment="Center" Margin="16,0,0,0"
+                                                      OnContent="" OffContent="" />
+                                    </Grid>
+                                </Border>
+
+                                <!-- channel + version info -->
+                                <Border Classes="SettingRow" Margin="0,8,0,2">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <StackPanel Grid.Column="0" Spacing="2">
+                                            <TextBlock Text="Channel" Classes="SettingTitle" />
+                                            <TextBlock
+                                                Text="Choose deployment channel. Don't change unless you know what you're doing."
+                                                Classes="SettingDesc" />
+                                        </StackPanel>
+                                        <ComboBox Grid.Column="1" SelectedItem="{Binding Channel}"
+                                                  VerticalAlignment="Center" Margin="16,0,0,0"
+                                                  Width="140" Background="#2a2a2a">
+                                            <ComboBoxItem Content="production" />
+                                            <ComboBoxItem Content="live" />
+                                            <ComboBoxItem Content="zcanary" />
+                                        </ComboBox>
+                                    </Grid>
+                                </Border>
+
+                                <!-- version info rows -->
+                                <Border Classes="SettingRow">
+                                    <Grid ColumnDefinitions="120,*">
+                                        <TextBlock Grid.Column="0" Text="Version" Classes="SettingDesc" />
+                                        <TextBlock Grid.Column="1" Text="{Binding Version}" Classes="SettingDesc"
+                                                   Foreground="#888" />
+                                    </Grid>
+                                </Border>
+                                <Border Classes="SettingRow">
+                                    <Grid ColumnDefinitions="120,*">
+                                        <TextBlock Grid.Column="0" Text="VersionGuid" Classes="SettingDesc" />
+                                        <TextBlock Grid.Column="1" Text="{Binding VersionGuid}" Classes="SettingDesc"
+                                                   Foreground="#888" />
+                                    </Grid>
+                                </Border>
+                                <Border Classes="SettingRow">
+                                    <Grid ColumnDefinitions="120,*">
+                                        <TextBlock Grid.Column="0" Text="Timestamp" Classes="SettingDesc" />
+                                        <TextBlock Grid.Column="1" Text="{Binding Timestamp}" Classes="SettingDesc"
+                                                   Foreground="#888" />
+                                    </Grid>
+                                </Border>
+
+                            </StackPanel>
+                        </ScrollViewer>
+                    </DataTemplate>
+
+                </ContentControl.DataTemplates>
+            </ContentControl>
+
+        </Grid>
+
+        <Border Grid.Row="1"
+                Background="#2d6a2d"
+                IsVisible="{Binding NotificationVisible}"
+                Padding="16,10">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <material:MaterialIcon Grid.Column="0" Kind="CheckCircle" Width="20" Height="20"
+                                       Foreground="#6fcf6f" VerticalAlignment="Center"
+                                       Margin="0,0,12,0" />
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                    <TextBlock Text="{Binding NotificationMessage}"
+                               FontSize="13" FontWeight="SemiBold" Foreground="#ffffff" />
+                    <TextBlock Text="Changes will take effect the next time you launch Roblox."
+                               FontSize="11" Foreground="#a0d0a0" />
+                </StackPanel>
+                <Button Grid.Column="2"
+                        Click="OnDismissNotification"
+                        Background="Transparent" BorderThickness="0"
+                        Foreground="#6fcf6f" Cursor="Hand" Padding="8">
+                    <material:MaterialIcon Kind="Close" Width="16" Height="16" />
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- bottom bar -->
+        <Border Grid.Row="2" Background="#141414" BorderBrush="#2a2a2a" BorderThickness="0,1,0,0" Padding="16,10">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                <Button Classes="SaveBtn" Command="{Binding SaveAndLaunchCommand}" Content="Save and Launch" />
+                <Button Classes="SaveBtn" Command="{Binding SaveCommand}" Content="Save" />
+                <Button Classes="CloseBtn" Click="OnCloseClicked" Content="Close" />
+            </StackPanel>
+        </Border>
+
+    </Grid>
+</Window>

@@ -1,0 +1,295 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Sunshine.ViewModels"
+        xmlns:material="using:Material.Icons.Avalonia"
+        x:Class="Sunshine.Views.AboutWindow"
+
+        x:DataType="vm:AboutWindowViewModel"
+        Title="About Sunshine"
+        Width="780" Height="320"
+        CanResize="False"
+        Icon="/Assets/avalonia-logo.ico"
+        WindowStartupLocation="CenterOwner"
+        Background="#1a1a1a"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="NoChrome"
+        ExtendClientAreaTitleBarHeightHint="-1">
+
+    <Window.Styles>
+        <Style Selector="Button.SideNavButton">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0,8" />
+            <Setter Property="Width" Value="72" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Button.SideNavButton:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+
+        <Style Selector="Button.LinkChip">
+            <Setter Property="Background" Value="#2a2a2a" />
+            <Setter Property="Foreground" Value="#cccccc" />
+            <Setter Property="BorderBrush" Value="#3a3a3a" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="Padding" Value="12,8" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+        <Style Selector="Button.LinkChip:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#333333" />
+        </Style>
+
+        <Style Selector="Button.LicenseCard">
+            <Setter Property="Background" Value="#242424" />
+            <Setter Property="BorderBrush" Value="#333" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="14,10" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+        <Style Selector="Button.LicenseCard:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#2d2d2d" />
+        </Style>
+    </Window.Styles>
+
+    <Grid ColumnDefinitions="72,*">
+
+        <!-- drag region covers top of sidebar + content -->
+        <Panel Grid.ColumnSpan="2"
+               VerticalAlignment="Top"
+               Height="32"
+               Background="Transparent"
+               PointerPressed="OnTitleBarPointerPressed"
+               ZIndex="10" />
+
+        <!-- close button -->
+        <Button Grid.ColumnSpan="2"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Width="46" Height="32"
+                Background="Transparent"
+                BorderThickness="0"
+                Foreground="#666"
+                Cursor="Hand"
+                Click="OnCloseClicked"
+                ZIndex="20">
+            <material:MaterialIcon Kind="Close" Width="8" Height="8" />
+        </Button>
+
+        <!-- sidebar -->
+        <Border Grid.Column="0" Background="#141414">
+            <StackPanel VerticalAlignment="Top" Margin="0,40,0,0" Spacing="4">
+
+                <Grid>
+                    <Border Width="3" HorizontalAlignment="Left" VerticalAlignment="Stretch"
+                            Background="#f0c040" CornerRadius="0,2,2,0"
+                            IsVisible="{Binding IsAboutTab}" />
+                    <Button Classes="SideNavButton" Command="{Binding ShowAboutCommand}">
+                        <StackPanel Spacing="4" HorizontalAlignment="Center">
+                            <material:MaterialIcon Kind="InformationOutline" Width="22" Height="22"
+                                                   Foreground="{Binding AboutIconColor}"
+                                                   HorizontalAlignment="Center" />
+                            <TextBlock Text="About" FontSize="10"
+                                       Foreground="{Binding AboutIconColor}"
+                                       HorizontalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                </Grid>
+
+                <Grid>
+                    <Border Width="3" HorizontalAlignment="Left" VerticalAlignment="Stretch"
+                            Background="#f0c040" CornerRadius="0,2,2,0"
+                            IsVisible="{Binding IsContributorsTab}" />
+                    <Button Classes="SideNavButton" Command="{Binding ShowContributorsCommand}">
+                        <StackPanel Spacing="4" HorizontalAlignment="Center">
+                            <material:MaterialIcon Kind="AccountGroup" Width="22" Height="22"
+                                                   Foreground="{Binding ContributorsIconColor}"
+                                                   HorizontalAlignment="Center" />
+                            <TextBlock Text="Credits" FontSize="10"
+                                       Foreground="{Binding ContributorsIconColor}"
+                                       HorizontalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                </Grid>
+
+                <Grid>
+                    <Border Width="3" HorizontalAlignment="Left" VerticalAlignment="Stretch"
+                            Background="#f0c040" CornerRadius="0,2,2,0"
+                            IsVisible="{Binding IsLicensesTab}" />
+                    <Button Classes="SideNavButton" Command="{Binding ShowLicensesCommand}">
+                        <StackPanel Spacing="4" HorizontalAlignment="Center">
+                            <material:MaterialIcon Kind="ScriptTextOutline" Width="22" Height="22"
+                                                   Foreground="{Binding LicensesIconColor}"
+                                                   HorizontalAlignment="Center" />
+                            <TextBlock Text="Licenses" FontSize="10"
+                                       Foreground="{Binding LicensesIconColor}"
+                                       HorizontalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                </Grid>
+
+            </StackPanel>
+        </Border>
+
+        <ContentControl Grid.Column="1" Content="{Binding CurrentPage}">
+            <ContentControl.DataTemplates>
+
+                <!-- about page  -->
+                <DataTemplate DataType="vm:AboutPage">
+                    <ScrollViewer Padding="28,32,28,24">
+                        <StackPanel Spacing="20">
+                            <StackPanel Orientation="Horizontal" Spacing="16">
+                                <Border Width="64" Height="64" CornerRadius="14" Background="#0d3d56">
+                                    <Image Source="/Assets/avalonia-logo.ico" Width="40" Height="40"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
+                                <StackPanel VerticalAlignment="Center" Spacing="3">
+                                    <StackPanel Orientation="Horizontal" Spacing="10">
+                                        <TextBlock Text="Sunshine" FontSize="22" FontWeight="Bold" Foreground="#e8e8e8" />
+                                        <TextBlock Text="Version 1.0.0" FontSize="14" Foreground="#666"
+                                                   VerticalAlignment="Bottom" Margin="0,0,0,3" />
+                                    </StackPanel>
+                                    <TextBlock Text="A Roblox launcher." FontSize="13" Foreground="#555" />
+                                </StackPanel>
+                            </StackPanel>
+
+                            <WrapPanel Orientation="Horizontal">
+                                <Button Classes="LinkChip" Margin="0,0,8,8">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <material:MaterialIcon Kind="CodeTags" Width="16" Height="16" />
+                                        <TextBlock Text="GitHub repository" FontSize="13" />
+                                    </StackPanel>
+                                </Button>
+                                <Button Classes="LinkChip" Margin="0,0,8,8">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <material:MaterialIcon Kind="HelpCircleOutline" Width="16" Height="16" />
+                                        <TextBlock Text="Help and Information" FontSize="13" />
+                                    </StackPanel>
+                                </Button>
+                                <Button Classes="LinkChip" Margin="0,0,8,8">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <material:MaterialIcon Kind="AlertCircleOutline" Width="16" Height="16" />
+                                        <TextBlock Text="Report an issue" FontSize="13" />
+                                    </StackPanel>
+                                </Button>
+                                <Button Classes="LinkChip" Margin="0,0,0,8">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <material:MaterialIcon Kind="Forum" Width="16" Height="16" />
+                                        <TextBlock Text="Discord server" FontSize="13" />
+                                    </StackPanel>
+                                </Button>
+                            </WrapPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                </DataTemplate>
+
+                <!-- contributors page  -->
+                <DataTemplate DataType="vm:ContributorsPage">
+                    <ScrollViewer Padding="28,32,28,24">
+                        <StackPanel Spacing="16">
+                            <TextBlock Text="Contributors" FontSize="22" FontWeight="Bold" Foreground="#e8e8e8" />
+                            <TextBlock Text="These are the people who have made notable contributions to Sunshine."
+                                       FontSize="13" Foreground="#666" TextWrapping="Wrap" />
+
+                            <Grid ColumnDefinitions="*,*,*" Margin="0,8,0,0">
+                                <StackPanel Grid.Column="0" Spacing="6" Margin="0,0,8,0">
+                                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,0,0,6">
+                                        <material:MaterialIcon Kind="CodeTags" Width="16" Height="16" Foreground="#aaa" />
+                                        <TextBlock Text="Code" FontSize="13" FontWeight="SemiBold" Foreground="#ccc" />
+                                    </StackPanel>
+                                    <TextBlock Text="you" Foreground="#888" FontSize="13" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1" Spacing="6" Margin="4,0,4,0">
+                                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,0,0,6">
+                                        <material:MaterialIcon Kind="Lightbulb" Width="16" Height="16"
+                                                               Foreground="#aaa" />
+                                        <TextBlock Text="Feature Ideas" FontSize="13" FontWeight="SemiBold"
+                                                   Foreground="#ccc" />
+                                    </StackPanel>
+                                    <TextBlock Text="your friends" Foreground="#888" FontSize="13" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2" Spacing="6" Margin="8,0,0,0">
+                                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,0,0,6">
+                                        <material:MaterialIcon Kind="HeartOutline" Width="16" Height="16"
+                                                               Foreground="#aaa" />
+                                        <TextBlock Text="Special Thanks" FontSize="13" FontWeight="SemiBold"
+                                                   Foreground="#ccc" />
+                                    </StackPanel>
+                                    <TextBlock Text="everyone" Foreground="#f0c040" FontSize="13" />
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </ScrollViewer>
+                </DataTemplate>
+
+                <!-- licenses page  -->
+                <DataTemplate DataType="vm:LicensesPage">
+                    <ScrollViewer Padding="28,32,28,24">
+                        <StackPanel Spacing="16">
+                            <TextBlock Text="Licenses" FontSize="22" FontWeight="Bold" Foreground="#e8e8e8" />
+
+                            <UniformGrid Columns="3" Margin="0,4,0,0">
+                                <Button Classes="LicenseCard" Margin="0,0,8,8">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <StackPanel Grid.Column="0" Spacing="3">
+                                            <TextBlock Text="Avalonia" FontSize="13" FontWeight="SemiBold"
+                                                       Foreground="#e0e0e0" />
+                                            <TextBlock Text="MIT License" FontSize="11" Foreground="#555" />
+                                        </StackPanel>
+                                        <material:MaterialIcon Grid.Column="1" Kind="ChevronRight"
+                                                               Width="16" Height="16" Foreground="#444"
+                                                               VerticalAlignment="Center" />
+                                    </Grid>
+                                </Button>
+                                <Button Classes="LicenseCard" Margin="0,0,8,8">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <StackPanel Grid.Column="0" Spacing="3">
+                                            <TextBlock Text="CommunityToolkit.Mvvm" FontSize="13" FontWeight="SemiBold"
+                                                       Foreground="#e0e0e0" />
+                                            <TextBlock Text="MIT License" FontSize="11" Foreground="#555" />
+                                        </StackPanel>
+                                        <material:MaterialIcon Grid.Column="1" Kind="ChevronRight"
+                                                               Width="16" Height="16" Foreground="#444"
+                                                               VerticalAlignment="Center" />
+                                    </Grid>
+                                </Button>
+                                <Button Classes="LicenseCard" Margin="0,0,0,8">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <StackPanel Grid.Column="0" Spacing="3">
+                                            <TextBlock Text="Material.Icons.Avalonia" FontSize="13"
+                                                       FontWeight="SemiBold" Foreground="#e0e0e0" />
+                                            <TextBlock Text="MIT License" FontSize="11" Foreground="#555" />
+                                        </StackPanel>
+                                        <material:MaterialIcon Grid.Column="1" Kind="ChevronRight"
+                                                               Width="16" Height="16" Foreground="#444"
+                                                               VerticalAlignment="Center" />
+                                    </Grid>
+                                </Button>
+                                <Button Classes="LicenseCard" Margin="0,0,0,8">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <StackPanel Grid.Column="0" Spacing="3">
+                                            <TextBlock Text="Material Design Icons" FontSize="13"
+                                                       FontWeight="SemiBold" Foreground="#e0e0e0" />
+                                            <TextBlock Text="Apache 2.0 License" FontSize="11" Foreground="#555" />
+                                        </StackPanel>
+                                        <material:MaterialIcon Grid.Column="1" Kind="ChevronRight"
+                                                               Width="16" Height="16" Foreground="#444"
+                                                               VerticalAlignment="Center" />
+                                    </Grid>
+                                </Button>
+                            </UniformGrid>
+                        </StackPanel>
+                    </ScrollViewer>
+                </DataTemplate>
+
+            </ContentControl.DataTemplates>
+        </ContentControl>
+
+    </Grid>
+</Window>
