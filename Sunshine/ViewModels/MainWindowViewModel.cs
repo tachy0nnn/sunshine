@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Sunshine.ViewModels;
 
@@ -7,20 +8,20 @@ public partial class MainWindowViewModel : ViewModelBase
     public string Greeting { get; } = "Welcome to Avalonia!";
 
     [RelayCommand]
-    private void Launch()
+    private async Task Launch()
     {
-        /* launch logic */
+        await LaunchBootstrapper(LaunchMode.Player);
     }
 
     [RelayCommand]
-    private void Settings()
+    private async Task LaunchStudio()
     {
-        /* open settings */
+        await LaunchBootstrapper(LaunchMode.Studio);
     }
 
-    [RelayCommand]
-    private void LaunchStudio()
+    private static Task LaunchBootstrapper(LaunchMode mode)
     {
-        /* launch studio */
+        BootstrapperLauncher.Launch(mode);
+        return Task.CompletedTask;
     }
 }

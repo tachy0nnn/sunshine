@@ -5,6 +5,7 @@
       <map>
         <entry key="Sunshine/App.axaml" value="Sunshine/Sunshine.csproj" />
         <entry key="Sunshine/Views/AboutWindow.axaml" value="Sunshine/Sunshine.csproj" />
+        <entry key="Sunshine/Views/BootstrapperWindow.axaml" value="Sunshine/Sunshine.csproj" />
         <entry key="Sunshine/Views/MainWindow.axaml" value="Sunshine/Sunshine.csproj" />
         <entry key="Sunshine/Views/SettingsWindow.axaml" value="Sunshine/Sunshine.csproj" />
       </map>

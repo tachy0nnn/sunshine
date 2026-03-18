@@ -83,9 +83,7 @@
                     Spacing="0">
 
             <StackPanel Orientation="Horizontal" Spacing="14" Margin="0,0,0,28">
-                <Border Width="52" Height="52"
-                        CornerRadius="12"
-                        Background="#0d3d56">
+                <Border Width="52" Height="52" CornerRadius="12" Background="#0d3d56">
                     <Image Source="/Assets/avalonia-logo.ico"
                            Width="32" Height="32"
                            HorizontalAlignment="Center"
@@ -108,13 +106,6 @@
                     <TextBlock Text="About Sunshine" FontSize="13" Foreground="#f0c040" />
                 </StackPanel>
             </Button>
-            <!--<Button Classes="LinkButton">
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                    <material:MaterialIcon Kind="Forum" Width="16" Height="16"
-                                           Foreground="#f0c040" VerticalAlignment="Center"/>
-                    <TextBlock Text="Join our Discord server" FontSize="13" Foreground="#f0c040"/>
-                </StackPanel>
-            </Button>-->
 
         </StackPanel>
 
@@ -124,7 +115,8 @@
                     VerticalAlignment="Center"
                     Spacing="8">
 
-            <Button Classes="NavButton">
+            <!-- launch roblox -->
+            <Button Classes="NavButton" Command="{Binding LaunchCommand}">
                 <Grid ColumnDefinitions="Auto,*,Auto">
                     <material:MaterialIcon Grid.Column="0" Kind="Play" Width="18" Height="18"
                                            Foreground="#f0c040" VerticalAlignment="Center"
@@ -136,6 +128,7 @@
                 </Grid>
             </Button>
 
+            <!-- configure settings -->
             <Button Classes="NavButton" Click="OnSettingsClicked">
                 <Grid ColumnDefinitions="Auto,*,Auto">
                     <material:MaterialIcon Grid.Column="0" Kind="Cog" Width="18" Height="18"
@@ -148,7 +141,8 @@
                 </Grid>
             </Button>
 
-            <Button Classes="NavButton">
+            <!-- launch studio -->
+            <Button Classes="NavButton" Command="{Binding LaunchStudioCommand}">
                 <Grid ColumnDefinitions="Auto,*,Auto">
                     <material:MaterialIcon Grid.Column="0" Kind="Wrench" Width="18" Height="18"
                                            Foreground="#e0e0e0" VerticalAlignment="Center"

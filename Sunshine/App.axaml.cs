@@ -17,6 +17,10 @@ public class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        // initialize the logger first so every subsequent call can write to the file
+        Logger.Initialize();
+        Logger.WriteLine("App::OnFrameworkInitializationCompleted", "application starting");
+
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit.
@@ -26,6 +30,8 @@ public class App : Application
             {
                 DataContext = new MainWindowViewModel()
             };
+
+            Logger.WriteLine("App::OnFrameworkInitializationCompleted", "main window created");
         }
 
         base.OnFrameworkInitializationCompleted();
