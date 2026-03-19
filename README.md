@@ -16,6 +16,6 @@ Sunshine is ***only supported*** on **Windows**.
 # License
 Sunshine is licensed under [GNU GPLv3](LICENSE).
 
-[shield-repo-license]:  https://img.shields.io/github/license/tachy0nnn/sunshine
+[shield-repo-license]: https://img.shields.io/github/license/tachy0nnn/sunshine
 
-[repo-license]:  https://github.com/tachy0nnn/sunshine/blob/main/LICENSE
+[repo-license]: https://github.com/tachy0nnn/sunshine/blob/main/LICENSE
