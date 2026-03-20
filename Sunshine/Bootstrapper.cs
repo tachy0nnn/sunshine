@@ -61,6 +61,10 @@ public class Bootstrapper
         _versionDir,
         _mode == LaunchMode.Studio ? "RobloxStudioBeta.exe" : "RobloxPlayerBeta.exe");
 
+    // HACK: roblox ships this alongside the player in version folder;
+    // if it is not deleted, then when launching the RobloxPlayerBeta.exe, it would launch installer.. stupid???
+    private string RobloxInstallerPath => Path.Combine(_versionDir, "RobloxPlayerInstaller.exe");
+    
     public bool IsCancelled => _cts.IsCancellationRequested;
 
     public event Action<string>? StatusChanged;
@@ -82,21 +86,74 @@ public class Bootstrapper
         _versionDir = Path.Combine(Paths.Versions, _versionGuid);
         Logger.WriteLine("Bootstrapper::RunAsync", $"version dir: {_versionDir}");
 
+        var previousGuid = SunshineState.Load().VersionGuid;
+        var isUpdate = !string.IsNullOrEmpty(previousGuid) && previousGuid != _versionGuid;
         var needsInstall = !File.Exists(ExecutablePath);
         Logger.WriteLine("Bootstrapper::RunAsync", $"needs install: {needsInstall}");
+        if (isUpdate)
+            Logger.WriteLine("Bootstrapper::RunAsync",
+                $"update detected: {previousGuid} → {_versionGuid}");
+
         if (needsInstall)
         {
-            SetStatus("Downloading Roblox…");
+            SetStatus(isUpdate ? "Updating Roblox…" : "Downloading Roblox…");
             await DownloadAndInstallAsync();
+
+            if (isUpdate)
+                DeleteOldVersions(keepGuid: _versionGuid);
         }
         else
         {
             Logger.WriteLine("Bootstrapper::RunAsync", "roblox already installed, skipping download");
         }
+        
+        RemoveRobloxInstaller();
 
         SetStatus("Launching…");
         Launch();
         Logger.WriteLine("Bootstrapper::RunAsync", "done");
+    }
+    
+    // removes RobloxPlayerInstaller.exe
+    private void RemoveRobloxInstaller()
+    {
+        if (!File.Exists(RobloxInstallerPath)) return;
+
+        try
+        {
+            File.Delete(RobloxInstallerPath);
+            Logger.WriteLine("Bootstrapper::RemoveRobloxInstaller", "deleted RobloxPlayerInstaller.exe");
+        }
+        catch (Exception ex)
+        {
+            // UHM that would be weird
+            Logger.WriteLine("Bootstrapper::RemoveRobloxInstaller",
+                $"failed to delete installer: {ex.Message}");
+        }
+    }
+    
+    // deletes every version directory that isn't the one we just installed
+    private static void DeleteOldVersions(string keepGuid)
+    {
+        Logger.WriteLine("Bootstrapper::DeleteOldVersions", $"cleaning up old versions (keeping {keepGuid})");
+
+        if (!Directory.Exists(Paths.Versions)) return;
+
+        foreach (var dir in new DirectoryInfo(Paths.Versions).GetDirectories())
+        {
+            if (dir.Name == keepGuid) continue;
+
+            try
+            {
+                dir.Delete(recursive: true);
+                Logger.WriteLine("Bootstrapper::DeleteOldVersions", $"deleted {dir.Name}");
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteLine("Bootstrapper::DeleteOldVersions",
+                    $"could not delete {dir.Name}: {ex.Message}");
+            }
+        }
     }
 
     // installation here
