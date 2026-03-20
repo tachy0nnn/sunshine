@@ -21,7 +21,7 @@
 
             <!-- icon + app name -->
             <StackPanel Orientation="Horizontal" Spacing="14" HorizontalAlignment="Center">
-                <Border Width="40" Height="40" CornerRadius="10" Background="#0d3d56">
+                <Border Width="40" Height="40" CornerRadius="10" Background="#ffffff">
                     <Image Source="/Assets/avalonia-logo.ico" Width="24" Height="24"
                            HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </Border>
