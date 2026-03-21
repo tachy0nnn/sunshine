@@ -32,8 +32,11 @@ public static class Logger
         {
             Directory.CreateDirectory(Paths.Logs);
 
+            // we need PID since rider IDE is a fucking bitch and loves to keep the previous process alive
+            // so by adding PID to the name, we make everytime a unique name for logfile
             var timestamp = DateTime.UtcNow.ToString("yyyyMMdd'T'HHmmss'Z'");
-            FilePath = Path.Combine(Paths.Logs, $"Sunshine_{timestamp}.log");
+            var pid = Environment.ProcessId;
+            FilePath = Path.Combine(Paths.Logs, $"Sunshine_{timestamp}_{pid}.log");
 
             _writer = new StreamWriter(FilePath, false, Encoding.UTF8) { AutoFlush = true };
 
@@ -48,7 +51,7 @@ public static class Logger
     }
 
     /// <summary>
-    ///     writes a single informational line.
+    ///     Writes a single informational line.
     /// </summary>
     public static void WriteLine(string identifier, string message)
     {
