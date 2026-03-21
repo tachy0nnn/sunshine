@@ -234,12 +234,12 @@
                         <StackPanel Spacing="16">
                             <TextBlock Text="Licenses" FontSize="22" FontWeight="Bold" Foreground="#e8e8e8" />
 
-                            <UniformGrid Columns="3" Margin="0,4,0,0">
-                                <Button Classes="LicenseCard" Margin="0,0,8,8">
+                            <WrapPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                <Button Classes="LicenseCard" Width="220" Margin="0,0,8,8">
                                     <Grid ColumnDefinitions="*,Auto">
                                         <StackPanel Grid.Column="0" Spacing="3">
                                             <TextBlock Text="Avalonia" FontSize="13" FontWeight="SemiBold"
-                                                       Foreground="#e0e0e0" />
+                                                       Foreground="#e0e0e0" TextWrapping="Wrap" />
                                             <TextBlock Text="MIT License" FontSize="11" Foreground="#555" />
                                         </StackPanel>
                                         <material:MaterialIcon Grid.Column="1" Kind="ChevronRight"
@@ -247,11 +247,11 @@
                                                                VerticalAlignment="Center" />
                                     </Grid>
                                 </Button>
-                                <Button Classes="LicenseCard" Margin="0,0,8,8">
+                                <Button Classes="LicenseCard" Width="220" Margin="0,0,8,8">
                                     <Grid ColumnDefinitions="*,Auto">
                                         <StackPanel Grid.Column="0" Spacing="3">
                                             <TextBlock Text="CommunityToolkit.Mvvm" FontSize="13" FontWeight="SemiBold"
-                                                       Foreground="#e0e0e0" />
+                                                       Foreground="#e0e0e0" TextWrapping="Wrap" />
                                             <TextBlock Text="MIT License" FontSize="11" Foreground="#555" />
                                         </StackPanel>
                                         <material:MaterialIcon Grid.Column="1" Kind="ChevronRight"
@@ -259,11 +259,14 @@
                                                                VerticalAlignment="Center" />
                                     </Grid>
                                 </Button>
-                                <Button Classes="LicenseCard" Margin="0,0,0,8">
+
+                                <!-- HACK: width in this button is 210 due its looking awful at 220 :P -->
+                                <Button Classes="LicenseCard" Width="210" Margin="0,0,8,8">
                                     <Grid ColumnDefinitions="*,Auto">
                                         <StackPanel Grid.Column="0" Spacing="3">
                                             <TextBlock Text="Material.Icons.Avalonia" FontSize="13"
-                                                       FontWeight="SemiBold" Foreground="#e0e0e0" />
+                                                       FontWeight="SemiBold"
+                                                       Foreground="#e0e0e0" TextWrapping="Wrap" />
                                             <TextBlock Text="MIT License" FontSize="11" Foreground="#555" />
                                         </StackPanel>
                                         <material:MaterialIcon Grid.Column="1" Kind="ChevronRight"
@@ -271,11 +274,11 @@
                                                                VerticalAlignment="Center" />
                                     </Grid>
                                 </Button>
-                                <Button Classes="LicenseCard" Margin="0,0,0,8">
+                                <Button Classes="LicenseCard" Width="220" Margin="0,0,8,8">
                                     <Grid ColumnDefinitions="*,Auto">
                                         <StackPanel Grid.Column="0" Spacing="3">
-                                            <TextBlock Text="Material Design Icons" FontSize="13"
-                                                       FontWeight="SemiBold" Foreground="#e0e0e0" />
+                                            <TextBlock Text="Material Design Icons" FontSize="13" FontWeight="SemiBold"
+                                                       Foreground="#e0e0e0" TextWrapping="Wrap" />
                                             <TextBlock Text="Apache 2.0 License" FontSize="11" Foreground="#555" />
                                         </StackPanel>
                                         <material:MaterialIcon Grid.Column="1" Kind="ChevronRight"
@@ -283,7 +286,19 @@
                                                                VerticalAlignment="Center" />
                                     </Grid>
                                 </Button>
-                            </UniformGrid>
+                                <Button Classes="LicenseCard" Width="220" Margin="0,0,8,8">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <StackPanel Grid.Column="0" Spacing="3">
+                                            <TextBlock Text="discord-rpc-csharp" FontSize="13" FontWeight="SemiBold"
+                                                       Foreground="#e0e0e0" TextWrapping="Wrap" />
+                                            <TextBlock Text="MIT License" FontSize="11" Foreground="#555" />
+                                        </StackPanel>
+                                        <material:MaterialIcon Grid.Column="1" Kind="ChevronRight"
+                                                               Width="16" Height="16" Foreground="#444"
+                                                               VerticalAlignment="Center" />
+                                    </Grid>
+                                </Button>
+                            </WrapPanel>
                         </StackPanel>
                     </ScrollViewer>
                 </DataTemplate>
