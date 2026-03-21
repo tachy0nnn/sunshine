@@ -20,9 +20,10 @@ namespace Sunshine;
 /// </summary>
 public class Bootstrapper
 {
+    // TODO: configure this shit with settings (so like if choosing other channel, or RBLX launcher suggests,, you get it)s
     private const string
         DefaultChannel =
-            "production"; // TODO: configure this shit with settings (so like if choosing other channel, or RBLX launcher suggests,, you get it)
+            "production";
 
     private const string CdnBase = "https://setup.rbxcdn.com";
     private const string ClientSettingsCdn = "https://clientsettingscdn.roblox.com";
@@ -46,6 +47,7 @@ public class Bootstrapper
     private readonly CancellationTokenSource _cts = new();
 
     private readonly LaunchMode _mode;
+    private readonly SunshineSettings _settings;
     private PackageManifest? _manifest;
     private string _versionDir = "";
 
@@ -54,6 +56,7 @@ public class Bootstrapper
     public Bootstrapper(LaunchMode mode)
     {
         _mode = mode;
+        _settings = SunshineSettings.Load();
         Logger.WriteLine("Bootstrapper::ctor", $"created for mode={mode}");
     }
 
@@ -62,7 +65,7 @@ public class Bootstrapper
         _mode == LaunchMode.Studio ? "RobloxStudioBeta.exe" : "RobloxPlayerBeta.exe");
 
     // HACK: roblox ships this alongside the player in version folder;
-    // if it is not deleted, then when launching the RobloxPlayerBeta.exe, it would launch installer.. stupid???
+    // if it is not deleted, then when launching the RobloxPlayerBeta.exe, it would launch installer... stupid???
     private string RobloxInstallerPath => Path.Combine(_versionDir, "RobloxPlayerInstaller.exe");
     
     public bool IsCancelled => _cts.IsCancellationRequested;
@@ -100,7 +103,14 @@ public class Bootstrapper
             await DownloadAndInstallAsync();
 
             if (isUpdate)
-                DeleteOldVersions(keepGuid: _versionGuid);
+                DeleteOldVersions(_versionGuid);
+
+            // clear the force-reinstall flag
+            if (_settings.ForceReinstall)
+            {
+                _settings.ForceReinstall = false;
+                _settings.Save();
+            }
         }
         else
         {
@@ -110,10 +120,45 @@ public class Bootstrapper
         RemoveRobloxInstaller();
 
         SetStatus("Launching…");
-        Launch();
+        var robloxProcess = Launch();
+
+        // start activity tracking + discord rpc if the user wants them
+        if (_settings.EnableActivityTracking && _mode == LaunchMode.Player)
+            _ = Task.Run(() => StartWatcher(robloxProcess));
+
         Logger.WriteLine("Bootstrapper::RunAsync", "done");
     }
     
+    private void StartWatcher(Process robloxProcess)
+    {
+        const string id = "Bootstrapper::StartWatcher";
+
+        using var watcher = new GameLogWatcher();
+
+        DiscordRichPresence? rpc = null;
+        if (_settings.DiscordRichPresence)
+        {
+            rpc = new DiscordRichPresence(watcher);
+            Logger.WriteLine(id, "discord rpc started");
+        }
+
+        watcher.Start();
+
+        // block until roblox exits
+        try
+        {
+            robloxProcess.WaitForExit();
+        }
+        catch (Exception ex)
+        {
+            Logger.WriteException(id, ex);
+        }
+
+        Logger.WriteLine(id, "roblox exited, cleaning up");
+        rpc?.Dispose();
+    }
+
+
     // removes RobloxPlayerInstaller.exe
     private void RemoveRobloxInstaller()
     {
@@ -322,17 +367,22 @@ public class Bootstrapper
     }
 
     // so here we launch
-    private void Launch()
+    private Process Launch()
     {
-        Logger.WriteLine("Bootstrapper::Launch", $"starting process: {ExecutablePath}");
+        Logger.WriteLine("Bootstrapper::Launch", $"starting: {ExecutablePath}");
+
         var info = new ProcessStartInfo
         {
             FileName = ExecutablePath,
             WorkingDirectory = _versionDir,
-            UseShellExecute = true
+            UseShellExecute = false // keep handle so we can wait for exit
         };
-        Process.Start(info);
-        Logger.WriteLine("Bootstrapper::Launch", "process started");
+
+        var process = Process.Start(info)
+                      ?? throw new Exception("failed to start roblox process");
+
+        Logger.WriteLine("Bootstrapper::Launch", $"process started (pid={process.Id})");
+        return process;
     }
 
     private static bool VerifyMd5(string filePath, string expectedHex)
