@@ -53,7 +53,7 @@ public class Package
     public int Size { get; init; }
 
     /// <summary>
-    /// Cached download path inside the sunshine downloads folder.
+    ///     Cached download path inside the sunshine downloads folder.
     /// </summary>
     public string DownloadPath => Path.Combine(Paths.Downloads, Signature);
 }

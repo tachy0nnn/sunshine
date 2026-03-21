@@ -67,7 +67,7 @@ public class Bootstrapper
     // HACK: roblox ships this alongside the player in version folder;
     // if it is not deleted, then when launching the RobloxPlayerBeta.exe, it would launch installer... stupid???
     private string RobloxInstallerPath => Path.Combine(_versionDir, "RobloxPlayerInstaller.exe");
-    
+
     public bool IsCancelled => _cts.IsCancellationRequested;
 
     public event Action<string>? StatusChanged;
@@ -116,7 +116,7 @@ public class Bootstrapper
         {
             Logger.WriteLine("Bootstrapper::RunAsync", "roblox already installed, skipping download");
         }
-        
+
         RemoveRobloxInstaller();
 
         SetStatus("Launching…");
@@ -128,7 +128,7 @@ public class Bootstrapper
 
         Logger.WriteLine("Bootstrapper::RunAsync", "done");
     }
-    
+
     private void StartWatcher(Process robloxProcess)
     {
         const string id = "Bootstrapper::StartWatcher";
@@ -176,7 +176,7 @@ public class Bootstrapper
                 $"failed to delete installer: {ex.Message}");
         }
     }
-    
+
     // deletes every version directory that isn't the one we just installed
     private static void DeleteOldVersions(string keepGuid)
     {
@@ -190,7 +190,7 @@ public class Bootstrapper
 
             try
             {
-                dir.Delete(recursive: true);
+                dir.Delete(true);
                 Logger.WriteLine("Bootstrapper::DeleteOldVersions", $"deleted {dir.Name}");
             }
             catch (Exception ex)
