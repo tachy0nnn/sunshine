@@ -204,15 +204,17 @@
                                         <StackPanel Grid.Column="0" Spacing="2">
                                             <TextBlock Text="Enable activity tracking" Classes="SettingTitle" />
                                             <TextBlock
-                                                Text="Allows Sunshine to detect what Roblox game you're playing."
+                                                Text="Allows Sunshine to detect what Roblox game you're playing. Required for Discord Rich Presence."
                                                 Classes="SettingDesc" />
                                         </StackPanel>
-                                        <ToggleSwitch Grid.Column="1" IsChecked="{Binding EnableActivityTracking}"
+                                        <ToggleSwitch Grid.Column="1"
+                                                      IsChecked="{Binding EnableActivityTracking}"
                                                       VerticalAlignment="Center" Margin="16,0,0,0"
                                                       OnContent="" OffContent="" />
                                     </Grid>
                                 </Border>
 
+                                <!-- rpc -->
                                 <TextBlock Text="Discord Rich Presence" Classes="SectionHeader" />
                                 <Border Classes="SettingRow">
                                     <Grid ColumnDefinitions="*,Auto">
@@ -222,11 +224,14 @@
                                                 Text="The Roblox game you're playing will be shown on your Discord profile."
                                                 Classes="SettingDesc" />
                                         </StackPanel>
-                                        <ToggleSwitch Grid.Column="1" IsChecked="{Binding DiscordRichPresence}"
+                                        <ToggleSwitch Grid.Column="1"
+                                                      IsChecked="{Binding DiscordRichPresence}"
+                                                      IsEnabled="{Binding EnableActivityTracking}"
                                                       VerticalAlignment="Center" Margin="16,0,0,0"
                                                       OnContent="" OffContent="" />
                                     </Grid>
                                 </Border>
+
                                 <Border Classes="SettingRow">
                                     <Grid ColumnDefinitions="*,Auto">
                                         <StackPanel Grid.Column="0" Spacing="2">
@@ -235,7 +240,9 @@
                                                 Text="Allows anybody to join the game you're currently in through your Discord profile."
                                                 Classes="SettingDesc" />
                                         </StackPanel>
-                                        <ToggleSwitch Grid.Column="1" IsChecked="{Binding AllowActivityJoining}"
+                                        <ToggleSwitch Grid.Column="1"
+                                                      IsChecked="{Binding AllowActivityJoining}"
+                                                      IsEnabled="{Binding DiscordRichPresence}"
                                                       VerticalAlignment="Center" Margin="16,0,0,0"
                                                       OnContent="" OffContent="" />
                                     </Grid>
@@ -248,7 +255,9 @@
                                                 Text="Shows the Roblox account you're playing with on your Discord profile."
                                                 Classes="SettingDesc" />
                                         </StackPanel>
-                                        <ToggleSwitch Grid.Column="1" IsChecked="{Binding ShowRobloxAccount}"
+                                        <ToggleSwitch Grid.Column="1"
+                                                      IsChecked="{Binding ShowRobloxAccount}"
+                                                      IsEnabled="{Binding DiscordRichPresence}"
                                                       VerticalAlignment="Center" Margin="16,0,0,0"
                                                       OnContent="" OffContent="" />
                                     </Grid>
