@@ -155,15 +155,15 @@ public class DiscordRichPresence : IDisposable
         _client.ClearPresence();
     }
 
-    private static Button[] BuildButtons(GameActivityData data)
+    private static DiscordRPC.Button[] BuildButtons(GameActivityData data)
     {
         // "join server" deeplink only works for public servers
         return
         [
-            new Button
+            new DiscordRPC.Button
             {
                 Label = "See game page",
-                Url = $"https://www.roblox.com/games/{data.PlaceId}"
+                Url = $"https://www.roblox.com/games/start?=placeId={data.PlaceId}"
             }
         ];
     }
